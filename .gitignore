@@ -1,3 +1,3 @@
-/node_modules
-/server.log
-/config/dev.js
+node_modules/
+server.log
+config/dev.js

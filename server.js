@@ -4,11 +4,10 @@ let express = require('express'),
     mongoose = require('mongoose'),
     bodyParser = require('body-parser'),
     fs = require('fs');
-    
+require('./models/candidate.model');
 mongoose.connect(API_KEY.MONGO_URI, {
     useNewUrlParser: true
 })
-
 let routes = require('./routes/routes.route');
 
 const PORT = 5001;
