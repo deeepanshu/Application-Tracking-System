@@ -22,6 +22,8 @@ const verificationSchema = mongoose.Schema({
         otp: {
             type: Number,
             required: true
-        }
+        },
+        expiryDate: Date
     }
 });
+module.exports = mongoose.model('verification', verificationSchema);

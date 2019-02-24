@@ -4,13 +4,22 @@ let express = require('express'),
     mongoose = require('mongoose'),
     bodyParser = require('body-parser'),
     fs = require('fs');
+
 require('./models/candidate.model');
+require('./models/interview.model');
+require('./models/interviewer.model');
+require('./models/job.model');
+require('./models/login.model');
+require('./models/session.model');
+require('./models/verification.model');
+
+
 mongoose.connect(API_KEY.MONGO_URI, {
     useNewUrlParser: true
 })
 let routes = require('./routes/routes.route');
 
-const PORT = 5001;
+const PORT = 5000;
 
 app.use((req, res, next) => {
     let now = new Date().toString();

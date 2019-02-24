@@ -8,7 +8,7 @@ const candidateSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    isVerified:{
+    isVerified: {
         email: {
             type: Boolean,
             default: false
@@ -19,40 +19,65 @@ const candidateSchema = mongoose.Schema({
         }
     },
     contact: {
-        type: String,
-        required: true
+        type: String
     },
-    address:{
+    address: {
         houseAndFlat: String,
         locality: String,
         city: String,
         state: String,
         country: String
     },
-    education: [
-        {
-            institution: String,
-            degree: String,
-            yearStarted: Number,
-            yearEnded: Number
+    education: [{
+        institution: String,
+        degree: String,
+        yearStarted: Number,
+        yearEnded: Number,
+        stillPursuing: {
+            type: Boolean,
+            deafult: false
         }
-    ],
-    employment: [
-        {
-            companyName: String,
-            profile: String,
-            timeSpent: Number,
+    }],
+    employment: [{
+        companyName: String,
+        profile: String,
+        currentSalary: String,
+        timeSpent: Number,
+    }],
+    uploads: [{
+        link: {
+            type: String,
+        },
+        default: {
+            type: Boolean
+        },
+        doc_type: {
+            type: String,
+            enum: ['Resume', 'Cover Letter', 'Introduction Video', 'Certifications', 'Others']
         }
-    ],
-    uploads: {
-        resume: String,
-        introduction: String
-    },
-    interviews: [
-        {
+    }],
+    applied_jobs: [{
+        jobId: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'interview'
+            ref: 'job'
+        },
+        isRefered: {
+            type: Boolean,
+            default: false
+        },
+        reference: {
+            name: String,
+            email: String
         }
-    ]
+    }],
+    references: [{
+        name: String,
+        organisationName: String,
+        position: String,
+        email: String,
+        mobile: String
+    }],
+    skills: Array
+
 });
-mongoose.model('candidate', candidateSchema);
+module.exports = mongoose.model('candidate', candidateSchema);

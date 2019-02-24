@@ -4,20 +4,46 @@ const interviewSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'candidate'
     },
-    interviewer: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'interviewer'
-    },
     job: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'job'
     },
-    status: {
-        type: Number,
-        require: true,
-        default: -1
+    finalStatus: {
+        type: String,
+        enum: ['Selected', 'Withdrawn', 'Not Selected', 'In Process']
     },
-    date: String,
-    time: String
+    interviews:[
+        {
+            interviewName: {
+                type: String,
+                enum: ['HR', 'Technical', 'Screening', 'General', 'Other']
+            },
+            interviewType: {
+                type: String,
+                enum: ['Telephonic', 'Face to Face', 'Skype']
+            },
+            interviewer: [
+                {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: 'interviewer'
+                }
+            ],
+            comments: {
+                type: String
+            },
+            feedback: {
+                type: String
+            }
+            ,
+            roundNo: Number,
+            status: {
+                type: String,
+                enum: ['Not Selected', 'Cleared', 'Pending', 'Selected']
+            },
+            date: String,
+            time: String
+        }
+    ]
+    
 });
-mongoose.model('interview', interviewSchema);
+module.exports = mongoose.model('interview', interviewSchema);

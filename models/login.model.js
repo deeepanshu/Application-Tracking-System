@@ -1,7 +1,11 @@
 const mongoose = require('mongoose');
 
 const loginSchema = mongoose.Schema({
-    id: {
+    userId: {
+        type: String,
+        required: true
+    },
+    email: {
         type: String,
         required: true
     },
@@ -11,8 +15,21 @@ const loginSchema = mongoose.Schema({
     },
     role: {
         type: String,
+        required: true,
+        enum: ["ROLE_ADMIN", "ROLE_INTERVIEWER", "ROLE_CANDIDATE", "ROLE_MANAGER"]
+    },
+    attempts: {
+        type: Number,
+        default: 0
+    },
+    isLoginAllowed: {
+        type: Boolean,
+        default: true
+    },
+    passwordExpiryDate: {
+        type: Date,
         required: true
     }
 });
 
-mongoose.model('login', loginSchema);
+module.exports = mongoose.model('login', loginSchema);
