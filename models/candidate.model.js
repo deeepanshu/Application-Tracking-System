@@ -29,9 +29,12 @@ const candidateSchema = mongoose.Schema({
         country: String
     },
     education: [{
-        institution: String,
+        institution: {
+            type: String,
+            required: true
+        },
         degree: String,
-        yearStarted: Number,
+        yearStarted: Number,    
         yearEnded: Number,
         stillPursuing: {
             type: Boolean,

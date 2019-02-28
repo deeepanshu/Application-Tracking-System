@@ -66,6 +66,7 @@ module.exports = {
         })
     },
     applyForJob: (req, res)=> {
+        
         if(!req.params.candidateId ||  !req.params.jobId){
             res.json({status:'empty request',missing:'id'});
         }
@@ -78,7 +79,7 @@ module.exports = {
             _id: mongoose.Types.ObjectId(req.params.candidateId)
         }, {
             $push: {
-                references: application
+                applied_jobs: application
             }
         },{new: true}, (err, saved)=>{
             if(err) throw err;

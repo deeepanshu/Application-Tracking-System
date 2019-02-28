@@ -17,6 +17,16 @@ const jobsSchema = new mongoose.Schema({
     educationalRequirements:[
         {type: String}
     ],
+    skills: [
+        {
+            skill: String,
+            proficiency: {
+                type: String,
+                enum: ['Basic', 'Medium', 'Advanced']
+            }
+        }
+    ],
+    blockedJobs: Array,
     location:{
         type: String
     },
@@ -36,7 +46,10 @@ const jobsSchema = new mongoose.Schema({
             }
         }
     ],
-    createdAt: Date,
+    createdAt: {
+        type: Date,
+        default: Date.now()
+    },
     isActive: {
         type: Boolean,
         default: true
@@ -44,11 +57,9 @@ const jobsSchema = new mongoose.Schema({
     numberOfVacancies: Number,
     jobCreater: {
         type: mongoose.Schema.Types.ObjectId,
-        required: true
     },
     jobHandler: {
         type: mongoose.Schema.Types.ObjectId,
-        required: true
     }
 });
 module.exports = mongoose.model('job', jobsSchema);

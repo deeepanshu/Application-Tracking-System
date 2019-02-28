@@ -3,7 +3,8 @@ let bcrypt = require('bcrypt');
 
 let loginSchema = mongoose.Schema({
     userId: {
-        type: String
+        type: String,
+        required: true
     },
     email: {
         type: String,
@@ -55,6 +56,7 @@ loginSchema.pre('save', function(next){
 });
 
 loginSchema.methods.comparePassword = function(pw, cb){
+
     bcrypt.compare(pw, this.password, function(err, isMatch) {
         if(err) return cb(err);
         cb(null, isMatch);
