@@ -5,14 +5,10 @@ const departmentSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    profiles: [
-        {
-            profile: {
-                type: String,
-                required: true
-            }
-        }
-    ]
+    profiles: [{
+        type: String,
+        required: true
+    }]
 });
 
 module.exports = mongoose.model('department', departmentSchema);

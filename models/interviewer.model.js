@@ -5,10 +5,6 @@ const interviewerModel = mongoose.Schema({
     contact: String,
     department: String,
     profile: String,
-    role: {
-        type: String,
-        enum: ['HR', 'Technical', 'Others']
-    }
 });
 
 module.exports = mongoose.model('interviewer', interviewerModel);

@@ -1,4 +1,4 @@
-const passowordGenerator = require('generate-password');
+const passwordGenerator = require('generate-password');
 const sendgrid = require('./../../services/sendgrid/sendgrid.service');
 let Interviewer = require('./../../models/interviewer.model');
 let Login = require('./../../models/login.model');
@@ -20,7 +20,7 @@ module.exports = {
         let interviewer = new Interviewer(req.body);
         interviewer.save((err, savedInterviewer) => {
             if(err) throw err;
-            plainPassword = passowordGenerator.generate({
+            plainPassword = passwordGenerator.generate({
                 length: 10,
                 numbers: true
             });

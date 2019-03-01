@@ -14,13 +14,16 @@ module.exports = {
         });
     },
     addProfile: (req, res) => {
-        if(!req.params.departmentId){
+        if(!req.body){
             res.json({message: "Not Updated"});
         }
-        Department.findOneAndUpdate({_id:req.params.departmentId}, {
+        Department.findOneAndUpdate({departmentName:req.body.departmentName}, {
             $push:{
-                profiles: req.body.profile
+                profiles: req.body.profiles
             }
+        },{new : true},(err, department) => {
+            if(err) throw err;
+            res.json(department);
         })
     }
 }
