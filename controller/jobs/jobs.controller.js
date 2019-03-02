@@ -13,5 +13,13 @@ module.exports = {
             if(err) throw err;
             res.status(200).json(jobs);
         })
+    },
+    getJobById: (req, res) => {
+        if(!req.params.id){
+            return res.json({}); 
+        }
+        Job.findOne({_id: req.params.id}, (err, jobs) => {
+            res.json(jobs);
+        })
     }
 }
