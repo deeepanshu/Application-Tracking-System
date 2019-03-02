@@ -4,6 +4,7 @@
 
 let path = require('path');
 let Candidate = require('./../../models/candidate.model');
+let Login = require('./../../models/login.model');
 let mongoose = require('mongoose');
 module.exports = {
     welcomeAPI: (req, res) => {},
@@ -103,6 +104,7 @@ module.exports = {
     },
 
     getCandidateByID: (req, res) => {
+        console.log(req.params.id);
         if (!req.params.id) {
             res.json({
                 status: 'empty request',
@@ -149,33 +151,42 @@ module.exports = {
         console.log(req.body);
         console.log(req.user);
         let fileList = [];
-        if (req.files.resume.length > 0) {
-            fileList.push({
-                link: req.files.resume[0].filename,
-                docType: 'Resume'
-            });
+        if (req.files.resume) {
+            if (req.files.resume.length > 0) {
+                fileList.push({
+                    link: req.files.resume[0].filename,
+                    docType: 'Resume'
+                });
+            }
         }
-        if (req.files.introduction.length > 0) {
-            fileList.push({
-                link: req.files.introduction[0].filename,
-                docType: 'Introduction Video'
-            });
+        if (req.files.resume) {
+            if (req.files.introduction.length > 0) {
+                fileList.push({
+                    link: req.files.introduction[0].filename,
+                    docType: 'Introduction Video'
+                });
+            }
         }
-        if (req.files.coverLetter.length > 0) {
-            fileList.push({
-                link: req.files.coverLetter[0].filename,
-                docType: 'Cover Letter'
-            });
+
+        if (req.files.coverLetter) {
+            if (req.files.coverLetter.length > 0) {
+                fileList.push({
+                    link: req.files.coverLetter[0].filename,
+                    docType: 'Cover Letter'
+                });
+            }
         }
-        Candidate.findOneAndUpdate({_id: req.user.userId}, {
+        Candidate.findOneAndUpdate({
+            _id: req.user.userId
+        }, {
             $push: {
                 uploads: fileList
             }
-        },{
+        }, {
             new: true
         }, (err, saved) => {
-            if(err) {
-                if(err) {
+            if (err) {
+                if (err) {
                     console.log(err);
                     throw err;
                 }
@@ -183,5 +194,37 @@ module.exports = {
             }
         })
         res.json({});
+    },
+    finalize: (req, res) => {
+        Candidate.findOneAndUpdate({
+            _id: req.user.userId
+        }, {
+            $set: {
+                isSignUpComplete: true
+            }
+        }, (err, candidate) => {
+            if (err) res.json({
+                success: false
+            });
+            Login.findOneAndUpdate({
+                userId: req.user.userId
+            }, {
+                $set: {
+                    isLoginAllowed: true
+                }
+            }, (err, login) => {
+                if (err || !login) {
+                    console.log(err);
+                    return res.json({
+                        success: false
+                    })
+                };
+                if (login) {
+                    res.json({
+                        success: true
+                    })
+                }
+            })
+        })
     }
 }

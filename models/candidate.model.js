@@ -62,7 +62,10 @@ const candidateSchema = mongoose.Schema({
         email: String,
         mobile: String
     }],
-    skills: Array
-
+    skills: Array,
+    isSignUpComplete: {
+        type: Boolean,
+        default: false
+    }
 });
 module.exports = mongoose.model('candidate', candidateSchema);

@@ -5,6 +5,7 @@ let fileSystemUpload = require("./../../middlewares/multer/multer.middleware");
 let s3FileUpload = require("./../../middlewares/multers3/multers3.middleware");
 let checkAuth = require("./../../middlewares/checkauth/checkauth.middleware");
 router.get('/', candidateController.getCandidates);
+router.get('/finalize', checkAuth, candidateController.finalize);
 router.get('/:id', candidateController.getCandidateByID);
 
 router.post('/add', candidateController.addCandidate);
