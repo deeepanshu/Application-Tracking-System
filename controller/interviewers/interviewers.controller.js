@@ -1,6 +1,6 @@
 const passwordGenerator = require('generate-password');
-const sendgrid = require('./../../services/sendgrid/sendgrid.service');
-const template
+const sendgrid = require('../../services/sendgrid');
+const template = require('../../services/sendgrid/templates/');
 let Interviewer = require('./../../models/interviewer.model');
 let Login = require('./../../models/login.model');
 
@@ -33,8 +33,8 @@ module.exports = {
             });
             login.save((err, savedLogin) => {
                 if(err) throw err;
-                let sendgridConfig = 
-                sendgrid(savedInterviewer.email, 'Registration Details',plainPassword);
+                let sendgridConfig = template.registration(savedInterviewer.email,plainPassword,'Registration Details');
+                sendgrid(sendgridConfig);
                 res.json(savedLogin);
             })
         })

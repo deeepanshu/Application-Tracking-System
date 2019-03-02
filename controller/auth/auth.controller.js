@@ -1,8 +1,10 @@
 let Login = require('./../../models/login.model');
 let Candidate = require('./../../models/candidate.model');
+const sendgrid = require('../../services/sendgrid');
 let jwt = require('jsonwebtoken');
 let keys = require('./../../config/keys');
-
+let template = require('../../services/sendgrid/templates');
+var randomstring = require("randomstring");
 module.exports = {
     getCurrentUser: (req, res) => {
         res.json(req.user);
@@ -18,7 +20,7 @@ module.exports = {
                 email: req.body.email
             }, (err, doc) => {
                 if (err || doc) {
-                    console.log("err",err, doc);
+                    console.log("err", err, doc);
                     return res.json({
                         success: false,
                         message: "Email exists"
@@ -52,7 +54,10 @@ module.exports = {
                                         message: "Email exists"
                                     });
                                 }
-                                
+
+                                let token = randomstring.generate();
+                                let sendgridConfig = template.candidateSignUp(newLogin.email, token, "SignUp Verification");
+                                sendgrid(sendgridConfig);
                                 res.json({
                                     success: true,
                                     saved
