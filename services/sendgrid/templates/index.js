@@ -1,5 +1,5 @@
 const keys = require('./../../../config/keys');
-const host = keys.HOST;
+const host = keys.HOST_FRONT;
 module.exports = {
     registration: (to, password, subject) => {
         return  {

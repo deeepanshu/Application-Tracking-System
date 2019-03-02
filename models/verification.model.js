@@ -1,29 +1,30 @@
 const mongoose = require('mongoose');
 const verificationSchema = mongoose.Schema({
-    candidate: {
+    userId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'candidate'
+        required: true
     },
-    email:{
-        email: {
+    resource: {
+        resourceType: {
             type: String,
+            enum: ['email', 'mobile'],
             required: true
         },
-        token: {
+        value: {
             type: String,
             required: true
         }
     },
-    contact: {
-        contact:{
-            type: String,
-            required: true
-        },
-        otp: {
-            type: Number,
-            required: true
-        },
-        expiryDate: Date
+    identifier: {
+        type: String,
+        required: true
+    },
+    timeCreated: Date,
+    timeOfExpiration: Date,
+    status: {
+        type: String,
+        enum: ['NH', 'V', 'NV'],
+        default: 'NH'
     }
 });
 module.exports = mongoose.model('verification', verificationSchema);

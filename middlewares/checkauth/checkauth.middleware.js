@@ -4,7 +4,12 @@ module.exports = (req, res, next) => {
     try{
         const token = req.headers.authorization.split(" ")[1];
         jwt.verify(token, keys.JWT_SECRET);
-        console.log("IN THE MIDDLE OF THINGS");
+        let decoded = jwt.decode(token);
+        req.user = {
+            userId: decoded.userId,
+            email: decoded.email,
+            role: decoded.role
+        }
         next();
     }
     catch (err) {

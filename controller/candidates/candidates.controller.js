@@ -6,69 +6,77 @@ let path = require('path');
 let Candidate = require('./../../models/candidate.model');
 let mongoose = require('mongoose');
 module.exports = {
-    welcomeAPI: (req, res) => {
-    },
+    welcomeAPI: (req, res) => {},
 
     addCandidate: (req, res) => {
-        if(!req.body){
-            res.json({status:'empty request'});
+        if (!req.body) {
+            res.json({
+                status: 'empty request'
+            });
         }
         let candidate = new Candidate(req.body);
-        candidate.save((err, saved)=>{
-            if(err) throw err;
+        candidate.save((err, saved) => {
+            if (err) throw err;
             res.status(200).json(saved);
         })
     },
 
     addCandidateEducation: (req, res) => {
-        if(!req.params.id){
-            res.json({status:'empty request',missing:'id'});
-        }
+        let education = req.body;
+        education = education.filter((edu) => !edu._id);
+
         Candidate.findOneAndUpdate({
-            _id: mongoose.Types.ObjectId(req.params.id)
+            _id: mongoose.Types.ObjectId(req.user.userId)
         }, {
             $push: {
-                education: req.body
+                education
             }
-        },{new: true}, (err, saved)=>{
-            if(err) throw err;
+        }, {
+            new: true
+        }, (err, saved) => {
+            if (err) throw err;
             res.json(saved);
         })
     },
     addCandidateEmployment: (req, res) => {
-        if(!req.params.id){
-            res.json({status:'empty request',missing:'id'});
-        }
+        let employments = req.body;
+        employments = employments.filter((employment) => !employment._id);
         Candidate.findOneAndUpdate({
-            _id: mongoose.Types.ObjectId(req.params.id)
+            _id: mongoose.Types.ObjectId(req.user.userId)
         }, {
             $push: {
-                employment: req.body
+                employment: employments
             }
-        },{new: true}, (err, saved)=>{
-            if(err) throw err;
+        }, {
+            new: true
+        }, (err, saved) => {
+            if (err) throw err;
             res.json(saved);
         })
     },
     addCandidateReferences: (req, res) => {
-        if(!req.params.id){
-            res.json({status:'empty request',missing:'id'});
-        }
+        let references = req.body;
+        references = references.filter((reference) => !reference._id);
         Candidate.findOneAndUpdate({
-            _id: mongoose.Types.ObjectId(req.params.id)
+            _id: mongoose.Types.ObjectId(req.user.userId)
         }, {
             $push: {
-                references: req.body
+                references: references
             }
-        },{new: true}, (err, saved)=>{
-            if(err) throw err;
+        }, {
+            new: true
+        }, (err, saved) => {
+            if (err) throw err;
             res.json(saved);
         })
     },
-    applyForJob: (req, res)=> {
-        
-        if(!req.params.candidateId ||  !req.params.jobId){
-            res.json({status:'empty request',missing:'id'});
+    applyForJob: (req, res) => {
+
+        if (!req.params.candidateId || !req.params.jobId) {
+            res.json({
+                status: 'empty request',
+                missing: 'id'
+            });
         }
         let application = {
             jobId: req.params.jobId,
@@ -81,8 +89,10 @@ module.exports = {
             $push: {
                 applied_jobs: application
             }
-        },{new: true}, (err, saved)=>{
-            if(err) throw err;
+        }, {
+            new: true
+        }, (err, saved) => {
+            if (err) throw err;
             res.json(saved);
         })
     },
@@ -93,11 +103,14 @@ module.exports = {
     },
 
     getCandidateByID: (req, res) => {
-        if(!req.params.id){
-            res.json({status:'empty request',missing:'id'});
+        if (!req.params.id) {
+            res.json({
+                status: 'empty request',
+                missing: 'id'
+            });
         }
         Candidate.findById(mongoose.Types.ObjectId(req.params.id), (err, found) => {
-            if(err) throw err;
+            if (err) throw err;
             res.json(found);
         })
     },
@@ -107,5 +120,68 @@ module.exports = {
     },
     getCandidateIntroByID: (req, res) => {
         res.sendFile(path.resolve(`${__dirname}/../../assets/intros/${req.params.filename}`));
+    },
+    getObjectList: (req, res) => {
+        Candidate.findOne({
+            _id: req.user.userId
+        }, `${req.params.object}`, (err, found) => {
+            console.log(found);
+            res.json(found);
+        })
+    },
+    addCandidateAddress: (req, res) => {
+        Candidate.findOneAndUpdate({
+            _id: mongoose.Types.ObjectId(req.user.userId)
+        }, {
+            $set: {
+                address: req.body
+            }
+        }, {
+            new: true
+        }, (err, saved) => {
+            if (err) throw err;
+            res.json(saved);
+        })
+    },
+    addCandidateFiles: (req, res) => {
+
+        console.log(req.body.certificates);
+        console.log(req.body);
+        console.log(req.user);
+        let fileList = [];
+        if (req.files.resume.length > 0) {
+            fileList.push({
+                link: req.files.resume[0].filename,
+                docType: 'Resume'
+            });
+        }
+        if (req.files.introduction.length > 0) {
+            fileList.push({
+                link: req.files.introduction[0].filename,
+                docType: 'Introduction Video'
+            });
+        }
+        if (req.files.coverLetter.length > 0) {
+            fileList.push({
+                link: req.files.coverLetter[0].filename,
+                docType: 'Cover Letter'
+            });
+        }
+        Candidate.findOneAndUpdate({_id: req.user.userId}, {
+            $push: {
+                uploads: fileList
+            }
+        },{
+            new: true
+        }, (err, saved) => {
+            if(err) {
+                if(err) {
+                    console.log(err);
+                    throw err;
+                }
+                res.json(saved);
+            }
+        })
+        res.json({});
     }
 }

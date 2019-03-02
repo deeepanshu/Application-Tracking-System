@@ -44,33 +44,15 @@ const candidateSchema = mongoose.Schema({
     employment: [{
         companyName: String,
         profile: String,
-        currentSalary: String,
         timeSpent: Number,
     }],
     uploads: [{
         link: {
             type: String,
         },
-        default: {
-            type: Boolean
-        },
-        doc_type: {
+        docType: {
             type: String,
             enum: ['Resume', 'Cover Letter', 'Introduction Video', 'Certifications', 'Others']
-        }
-    }],
-    applied_jobs: [{
-        jobId: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'job'
-        },
-        isRefered: {
-            type: Boolean,
-            default: false
-        },
-        reference: {
-            name: String,
-            email: String
         }
     }],
     references: [{
