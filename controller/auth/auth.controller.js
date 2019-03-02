@@ -14,11 +14,11 @@ module.exports = {
                 message: 'Please enter email and password'
             });
         } else {
-            Candidate.find({
+            Candidate.findOne({
                 email: req.body.email
             }, (err, doc) => {
                 if (err || doc) {
-                    console.log(err);
+                    console.log("err",err, doc);
                     return res.json({
                         success: false,
                         message: "Email exists"
@@ -41,7 +41,8 @@ module.exports = {
                             let newLogin = new Login({
                                 email: req.body.email,
                                 password: req.body.password,
-                                userId: savedUser._id
+                                userId: savedUser._id,
+                                isLoginAllowed: false
                             });
                             newLogin.save((err, saved) => {
                                 if (err) {
@@ -51,6 +52,7 @@ module.exports = {
                                         message: "Email exists"
                                     });
                                 }
+                                
                                 res.json({
                                     success: true,
                                     saved
@@ -68,14 +70,17 @@ module.exports = {
             email: req.body.email
         }, (err, login) => {
             if (err) throw err;
-            if (!login) res.send({
+            if (!login) return res.send({
+                success: false,
+                message: 'Auth failed'
+            })
+            if (!login.isLoginAllowed) return res.send({
                 success: false,
                 message: 'Auth failed'
             })
             else {
                 login.comparePassword(req.body.password, (err, isMatch) => {
                     if (isMatch && !err) {
-                        //login.toObject()
                         let token = jwt.sign({
                             userId: login.userId,
                             email: login.email,

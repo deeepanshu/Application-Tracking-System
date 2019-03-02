@@ -1,12 +1,12 @@
 const sgMail = require('@sendgrid/mail');
 const keys = require('./../../config/keys');
 sgMail.setApiKey(keys.SENDGRID);
-module.exports = (to, subject, password) => {
+module.exports = (sendConfiguration) => {
     const msg = {
-        to: to,
+        to: sendConfiguration.to,
         from: 'support@ats.com',
-        subject: subject,
-        html: `<div><h3>Login Details</h3><h5>Login ID: ${to}</h5><h5>Password: ${password}</h5></div>`,
+        subject: sendConfiguration.subject,
+        html: sendConfiguration.html,
     };
     sgMail.send(msg);     
 }

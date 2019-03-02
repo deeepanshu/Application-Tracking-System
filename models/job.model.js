@@ -11,6 +11,9 @@ const jobsSchema = new mongoose.Schema({
     targetDate: {
         type: String,
     },
+    startDate: {
+        type: String,
+    },
     profile: String,
     package: String,
     description: String,
