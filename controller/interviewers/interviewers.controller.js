@@ -80,5 +80,58 @@ module.exports = {
             if (err) throw err;
             res.json(interviews);
         })
+    },
+    giveInterviewFeedback: (req, res) => {
+        console.log(req.body);
+        if (!req.body) {
+            return res.json({
+                success: false,
+                message: "Empty Request"
+            });
+        }
+        let currentStatus = req.body.status;
+        let finalRecordStatus;
+        switch (currentStatus) {
+            case "NOT SELECTED":
+                finalRecordStatus = currentStatus;
+                break;
+            case "SELECTED":
+                finalRecordStatus = currentStatus;
+                break;
+            case "NEXT ROUND":
+                finalRecordStatus = 'ASSIGN NEXT';
+                break;
+            case "PENDING":
+                finalRecordStatus = 'DECIDING';
+                break;
+            default:
+                return res.json({
+                    success: false,
+                    message: "Empty Request"
+                });
+        }
+
+
+        Interview.findOneAndUpdate({
+            candidate: mongoose.Types.ObjectId(req.body.candidate),
+            job: mongoose.Types.ObjectId(req.body.job),
+            "interviews": {
+                $elemMatch: {
+                    "_id": mongoose.Types.ObjectId(req.body.recordId)
+                }
+            }
+        },{
+            $set:{
+                "interviews.$.status": currentStatus,
+                finalStatus : finalRecordStatus
+            }
+        } ,{new: true}, (err, saved) => {
+            if (err) throw err;
+            if(saved){
+                return res.json({saved, success: true});
+            }
+
+            return res.json({success: false});
+        })
     }
 }

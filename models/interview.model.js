@@ -10,7 +10,7 @@ const interviewSchema = mongoose.Schema({
     },
     finalStatus: {
         type: String,
-        enum: ['Selected', 'Withdrawn', 'Not Selected', 'In Process', 'Not Assigned', 'Assign Next'],
+        enum: ['SELECTED', 'WITHDRAWN', 'NOT SELECTED', 'IN PROCESS', 'NOT ASSIGNED', 'ASSIGN NEXT', 'DECIDING'],
         default: 'Not Assigned'
     },
     interviews:[

@@ -83,7 +83,7 @@ module.exports = {
         });
     },
     getApplications: (req, res) => {
-        Interview.find({job: mongoose.Types.ObjectId(req.params.jobId),finalStatus: 'Not Assigned' }).populate('candidate').exec((err, applications) => {
+        Interview.find({job: mongoose.Types.ObjectId(req.params.jobId),finalStatus: {$in: ['NOT ASSIGNED', 'ASSIGN NEXT']} }).populate('candidate').exec((err, applications) => {
             if(err) throw err;
             console.log(applications);
             res.json(applications);
@@ -99,16 +99,30 @@ module.exports = {
             date: req.body.date,
             time: req.body.time
         };
-        Interview.findOneAndUpdate({job: req.params.jobId, candidate: req.body.candidate}, {
-            $push: {
-                interviews: interview
-            },
-            $set: {
-                finalStatus: 'In Process'
-            }
-        }, {new: true}, (err, savedInterview) => {
+        Interview.findOne({job: req.params.jobId, candidate: req.body.candidate}, (err, found) => {
             if(err) throw err;
-            res.json({success: true,interview: savedInterview});
-        })
+            let count = 0;
+
+            if(!found){
+                return res.json({success: false, message:'error occured'});
+            }
+            else {
+                count = found.interviews ? found.interviews.length + 1: 0;
+                interview.roundNo = count;
+                Interview.findOneAndUpdate({job: req.params.jobId, candidate: req.body.candidate}, {
+                    $push: {
+                        interviews: interview
+                    },
+                    $set: {
+                        finalStatus: 'In Process',
+                        
+                    }
+                }, {new: true}, (err, savedInterview) => {
+                    if(err) throw err;
+                    return res.json({success: true,interview: savedInterview});
+                })
+            }
+           
+        });   
     }
 }

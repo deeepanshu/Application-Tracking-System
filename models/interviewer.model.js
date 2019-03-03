@@ -1,10 +1,25 @@
 const mongoose = require('mongoose');
 const interviewerModel = mongoose.Schema({
-    name: String,
-    email: String,
-    contact: String,
-    department: String,
-    profile: String,
+    name: {
+        type: String,
+        required: true
+    },
+    email: {
+        type: String,
+        required: true
+    },
+    contact: {
+        type: String,
+        required: true
+    },
+    department: {
+        type: String,
+        required: true
+    },
+    profile: {
+        type: String,
+        required: true
+    },
 });
 
 module.exports = mongoose.model('interviewer', interviewerModel);

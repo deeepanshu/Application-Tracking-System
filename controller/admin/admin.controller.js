@@ -1,4 +1,6 @@
 const Department = require('./../../models/department.model');
+const Interview = require('./../../models/interview.model');
+
 module.exports = {
     getDepartments: (req, res) => {
         Department.find({}, (err, departments) => {
@@ -24,6 +26,12 @@ module.exports = {
         },{new : true},(err, department) => {
             if(err) throw err;
             res.json(department);
+        })
+    },
+    getInterviews: (req, res) => {
+        Interview.find({}, {interviews: 0}).populate('job').populate('candidate').exec((err, found) => {
+            console.log(found);
+            res.json(found);
         })
     }
 }

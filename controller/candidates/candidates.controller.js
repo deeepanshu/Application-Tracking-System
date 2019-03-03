@@ -1,11 +1,25 @@
-/*
-    ToDo: applyForJob: add files to view
-*/
-
 let path = require('path');
 let Candidate = require('./../../models/candidate.model');
+let Interview = require('./../../models/interview.model');
 let Login = require('./../../models/login.model');
 let mongoose = require('mongoose');
+let fs = require('fs');
+const mimeType = {
+    '.ico': 'image/x-icon',
+    '.html': 'text/html',
+    '.js': 'text/javascript',
+    '.json': 'application/json',
+    '.css': 'text/css',
+    '.png': 'image/png',
+    '.jpg': 'image/jpeg',
+    '.wav': 'audio/wav',
+    '.mp3': 'audio/mpeg',
+    '.svg': 'image/svg+xml',
+    '.pdf': 'application/pdf',
+    '.doc': 'application/msword',
+    '.eot': 'appliaction/vnd.ms-fontobject',
+    '.ttf': 'aplication/font-sfnt'
+};
 module.exports = {
     welcomeAPI: (req, res) => {},
 
@@ -118,7 +132,28 @@ module.exports = {
     },
 
     getUploads: (req, res) => {
-        res.sendFile(path.resolve(`${__dirname}/../../assets/${req.params.filename}`));
+        // // const ext = path.parse(req.params.filename).ext;
+
+        let filename = path.resolve(`${__dirname}/../../assets/${req.params.filename}`);
+        fs.readFile(filename, function (err, data) {
+            if (err) {
+                res.statusCode = 500;
+                res.end(`Error getting the file: ${err}.`);
+            } else {
+                // based on the URL path, extract the file extention. e.g. .js, .doc, ...
+                const ext = path.parse(filename).ext;
+                console.log(ext, mimeType[ext]);
+                // if the file is found, set Content-type and send data
+                res.setHeader('Content-type', mimeType[ext] || 'text/plain');
+                res.write(data);
+                res.end();
+            }
+        });
+
+
+        // // res.setHeader('Content-type', mimeType[ext] || 'text/plain' );
+        // // res.end(data);
+        // res.sendFile(path.resolve(`${__dirname}/../../assets/${req.params.filename}`));
     },
     getObjectList: (req, res) => {
         Candidate.findOne({
@@ -222,6 +257,39 @@ module.exports = {
                     })
                 }
             })
+        })
+    },
+    profile: (req, res) => {
+        Candidate.findOne({
+            _id: req.user.userId
+        }, (err, candidate) => {
+            res.json(candidate);
+        })
+    },
+    profileApplications: (req, res) => {
+console.log(req.user.userId)
+        Interview.aggregate([{
+                $match: {
+                    candidate: mongoose.Types.ObjectId(req.user.userId)
+                }
+            },{
+                $lookup:{
+                    from: 'jobs',
+                    localField: 'job',
+                    foreignField: '_id',
+                    as: 'job'
+                }
+            }
+            ,
+            {
+                $unwind: {
+                    path: "$interviews"
+                }
+            }
+        ]).exec((err, found) => {
+            if (err) throw err;
+            console.log(found);
+            res.json(found);
         })
     }
 }

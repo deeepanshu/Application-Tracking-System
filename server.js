@@ -5,7 +5,8 @@ let express = require('express'),
     bodyParser = require('body-parser'),
     passport = require('passport'),
     logger = require('./middlewares/logger/logger.middleware').logger,
-    crossorigins = require('./middlewares/crossorigins/crossorigins.middleware').crossorigins;
+    crossorigins = require('./middlewares/crossorigins/crossorigins.middleware').crossorigins,
+    path = require('path');
 
 require('./models/candidate.model');
 require('./models/interview.model');
@@ -23,6 +24,7 @@ let routes = require('./routes/routes.route');
 
 const PORT = 5000;
 
+app.use(express.static(path.join('/assets')));
 app.use(logger);
 
 app.use(crossorigins);
@@ -33,7 +35,7 @@ require('./strategy/passport')(passport);
 
 app.use(
     bodyParser.urlencoded({
-        extended: true
+        extended: false
     })
 );
 app.use(bodyParser.json());
