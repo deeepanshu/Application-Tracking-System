@@ -117,11 +117,8 @@ module.exports = {
         })
     },
 
-    getCandidateResumeByID: (req, res) => {
-        res.sendFile(path.resolve(`${__dirname}/../../assets/resumes/${req.params.filename}`));
-    },
-    getCandidateIntroByID: (req, res) => {
-        res.sendFile(path.resolve(`${__dirname}/../../assets/intros/${req.params.filename}`));
+    getUploads: (req, res) => {
+        res.sendFile(path.resolve(`${__dirname}/../../assets/${req.params.filename}`));
     },
     getObjectList: (req, res) => {
         Candidate.findOne({

@@ -19,7 +19,6 @@ router.post('/apply/:candidateId/:jobId', candidateController.applyForJob);
 
 router.get('/list/:object',checkAuth, candidateController.getObjectList);
 
-router.get('/resume/:filename', candidateController.getCandidateResumeByID);
-router.get('/intro/:filename',candidateController.getCandidateIntroByID);
+router.get('/file/:filename',candidateController.getUploads);
 
 module.exports = router;

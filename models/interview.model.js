@@ -10,7 +10,8 @@ const interviewSchema = mongoose.Schema({
     },
     finalStatus: {
         type: String,
-        enum: ['Selected', 'Withdrawn', 'Not Selected', 'In Process']
+        enum: ['Selected', 'Withdrawn', 'Not Selected', 'In Process', 'Not Assigned', 'Assign Next'],
+        default: 'Not Assigned'
     },
     interviews:[
         {
@@ -22,28 +23,37 @@ const interviewSchema = mongoose.Schema({
                 type: String,
                 enum: ['Telephonic', 'Face to Face', 'Skype']
             },
-            interviewer: [
-                {
-                    type: mongoose.Schema.Types.ObjectId,
-                    ref: 'interviewer'
-                }
-            ],
+            interviewer: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'interviewer'
+            },
             comments: {
                 type: String
             },
             feedback: {
                 type: String
-            }
-            ,
+            },
             roundNo: Number,
             status: {
                 type: String,
-                enum: ['Not Selected', 'Cleared', 'Pending', 'Selected']
+                enum: ['NOT SELECTED', 'NEXT ROUND', 'PENDING', 'SELECTED', 'NOT TAKEN YET'],
+                default: 'NOT TAKEN YET'
             },
             date: String,
             time: String
         }
-    ]
-    
+    ],
+    isRefered: {
+        type: Boolean,
+        default: false
+    },
+    reference: {
+        name: {
+            type: String
+        },
+        email: {
+            type: String
+        }
+    }
 });
 module.exports = mongoose.model('interview', interviewSchema);
