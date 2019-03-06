@@ -2,3 +2,4 @@ node_modules/
 server.log
 config/dev.js
 assets/
+node_modules
