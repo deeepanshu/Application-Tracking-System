@@ -8,7 +8,10 @@ module.exports = {
         job.jobCreater = req.user.userId;
         job.jobHandler = req.user.userId;
         job.save((err, saved) => {
-            if (err) throw err;
+            if (err) {
+                console.log(err);
+                res.json({status: false});
+            };
             res.json({
                 status: true,
                 job: saved
