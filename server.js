@@ -24,7 +24,8 @@ let routes = require('./routes/routes.route');
 
 const PORT = 5000;
 
-app.use(express.static(path.join('/assets')));
+app.use(express.static(path.join(__dirname, '/assets')));
+app.use("/", express.static(path.join(__dirname, "angular")));
 app.use(logger);
 
 app.use(crossorigins);
@@ -41,6 +42,9 @@ app.use(
 app.use(bodyParser.json());
 
 app.use(routes);
+app.use((req, res, next) => {
+    res.sendFile(path.join(__dirname, 'angular', 'index.html'))
+} )
 
 app.listen(PORT, () => {
     console.log(`Server running at ${PORT}`);
