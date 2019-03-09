@@ -22,7 +22,7 @@ mongoose.connect(API_KEY.MONGO_URI, {
 })
 let routes = require('./routes/routes.route');
 
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
 app.use(express.static(path.join(__dirname, '/assets')));
 app.use("/", express.static(path.join(__dirname, "angular")));
